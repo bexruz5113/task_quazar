@@ -68,6 +68,20 @@
                     >
                       Enter
                     </v-btn>
+                    <v-snackbar v-model="snackbar" color="success " right top>
+                      {{ text }}
+
+                      <template v-slot:action="{ attrs }">
+                        <v-btn
+                          color="gray"
+                          text
+                          v-bind="attrs"
+                          @click="snackbar = false"
+                        >
+                          x
+                        </v-btn>
+                      </template>
+                    </v-snackbar>
                   </div>
                 </v-form>
               </v-tab-item>
@@ -91,6 +105,8 @@ import { mapActions } from "vuex";
 export default {
   data() {
     return {
+      snackbar: false,
+      text: `Successful`,
       users,
       tab: null,
       items: ["Login", "Registration"],
@@ -103,17 +119,22 @@ export default {
   methods: {
     ...mapActions("user", ["fetchUser"]),
     login() {
-      const isUserExist = this.users.find(
-        (user) =>
-          user.email === this.form.email && user.password === this.form.password
-      );
-      if (isUserExist) {
-        localStorage.setItem("user", true);
-        this.fetchUser(this.form);
-        this.$router.push("/");
-      } else {
-        alert("Email or password is wrong.");
-      }
+      setTimeout(() => {
+        const isUserExist = this.users.find(
+          (user) =>
+            user.email === this.form.email &&
+            user.password === this.form.password
+        );
+        if (isUserExist) {
+          localStorage.setItem("user", true);
+          this.fetchUser(this.form);
+          this.$router.push("/");
+        } else {
+          alert("Email or password is wrong.");
+        }
+      }, 1000);
+
+      this.snackbar = true;
     },
   },
 };
